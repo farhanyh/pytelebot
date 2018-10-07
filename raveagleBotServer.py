@@ -6,8 +6,8 @@ import database
 
 class BotServer():
     """docstring for BotServer"""
-    TOKEN = '661278652:AAG4enhNuePsOHJbfLN_Qgk0N0WlX7fdgPE'
-    ADMIN_ID = 172522886
+    TOKEN = os.environ.get("BOT_TOKEN")
+    ADMIN_ID = os.environ.get("CREATOR_ID")
 
     def __init__(self):
         super(BotServer, self).__init__()
