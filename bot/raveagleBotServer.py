@@ -3,11 +3,12 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Inlin
 import logging
 import ipchecker
 import database
+import os
 
 class BotServer():
     """docstring for BotServer"""
     TOKEN = os.environ.get("BOT_TOKEN")
-    ADMIN_ID = os.environ.get("CREATOR_ID")
+    ADMIN_ID = int(os.environ.get("CREATOR_ID"))
 
     def __init__(self):
         super(BotServer, self).__init__()
@@ -17,14 +18,14 @@ class BotServer():
         self.job_queue.run_once(self.notify_ip, 0)
         
     def start(self, bot, update):
-        import model.user_model as user_model
-        um = user_model.UserModel(self.db)
+        # import model.user_model as user_model
+        # um = user_model.UserModel(self.db)
         sender = update.message.from_user
-        res = um.get(sender.id)
+        # res = um.get(sender.id)
         newreg = False
-        if len(res) == 0:
-            um.set(sender)
-            newreg = True
+        # if len(res) == 0:
+            # um.set(sender)
+            # newreg = True
         if update.message.chat.type == "group":
             bot.send_message(chat_id=update.message.chat_id, text="Reply me to send message to my creator.")
         else:
@@ -84,8 +85,8 @@ class BotServer():
         self.job_queue = self.updater.job_queue
         self.ipchecker = ipchecker.IPChecker(self)
         self.ipchecker.start()
-        self.db = database.Database()
-        self.db.connect()
+        # self.db = database.Database()
+        # self.db.connect()
 
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -110,7 +111,7 @@ class BotServer():
                 pass
         except KeyboardInterrupt:
             print("Stopping server. Please wait...")
-            self.db.close()
+            # self.db.close()
             self.ipchecker.join()
             self.updater.stop()
             print("Server stopped.")
