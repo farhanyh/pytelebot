@@ -14,8 +14,8 @@ class BotServer():
         super(BotServer, self).__init__()
         self.run()
 
-    def notifyIpUpdated(self):
-        self.job_queue.run_once(self.notify_ip, 0)
+    # def notifyIpUpdated(self):
+    #     self.job_queue.run_once(self.notify_ip, 0)
         
     def start(self, bot, update):
         # import model.user_model as user_model
@@ -64,16 +64,21 @@ class BotServer():
         )
         bot.answer_inline_query(update.inline_query.id, results)
 
-    def check_ip(self, bot, update):
-        sender = update.message.from_user
-        if sender.id == BotServer.ADMIN_ID:
-            bot.send_message(chat_id=BotServer.ADMIN_ID, text=self.ipchecker.lastIP)
-        else:
-            bot.send_message(chat_id=update.message.chat_id, text="I'm sorry, this command is not available for you.")
+    # def check_ip(self, bot, update):
+    #     sender = update.message.from_user
+    #     if sender.id == BotServer.ADMIN_ID:
+    #         bot.send_message(chat_id=BotServer.ADMIN_ID, text=self.ipchecker.lastIP)
+    #     else:
+    #         bot.send_message(chat_id=update.message.chat_id, text="I'm sorry, this command is not available for you.")
 
-    def notify_ip(self, bot, job):
-        msg = "Home address has been changed: " + self.ipchecker.lastIP
-        bot.send_message(chat_id=BotServer.ADMIN_ID, text=msg)
+    # def notify_ip(self, bot, job):
+    #     msg = "Home address has been changed: " + self.ipchecker.lastIP
+    #     bot.send_message(chat_id=BotServer.ADMIN_ID, text=msg)
+
+    def get_languages(bot, update):
+        # get
+        msg = 
+        bot.send_message(chat_id=update.message.chat_id, text=msg)
 
     def unknown(bot, update):
         bot.send_message(chat_id=update.message.chat_id, text="Sorry, I didn't understand that command.")
@@ -83,8 +88,8 @@ class BotServer():
         self.updater = Updater(token = BotServer.TOKEN)
         self.dispatcher = self.updater.dispatcher
         self.job_queue = self.updater.job_queue
-        self.ipchecker = ipchecker.IPChecker(self)
-        self.ipchecker.start()
+        # self.ipchecker = ipchecker.IPChecker(self)
+        # self.ipchecker.start()
         # self.db = database.Database()
         # self.db.connect()
 
@@ -94,14 +99,14 @@ class BotServer():
         echo_handler = MessageHandler(Filters.text, BotServer.echo)
         caps_handler = CommandHandler('caps', BotServer.caps, pass_args=True)
         inline_caps_handler = InlineQueryHandler(BotServer.inline_caps)
-        checkip_handler = CommandHandler('checkip', self.check_ip)
+        # checkip_handler = CommandHandler('checkip', self.check_ip)
         unknown_handler = MessageHandler(Filters.command, BotServer.unknown)
 
         self.dispatcher.add_handler(start_handler)
         self.dispatcher.add_handler(echo_handler)
         self.dispatcher.add_handler(caps_handler)
         self.dispatcher.add_handler(inline_caps_handler)
-        self.dispatcher.add_handler(checkip_handler)
+        # self.dispatcher.add_handler(checkip_handler)
         self.dispatcher.add_handler(unknown_handler)
 
         print("Server started.")
@@ -112,6 +117,6 @@ class BotServer():
         except KeyboardInterrupt:
             print("Stopping server. Please wait...")
             # self.db.close()
-            self.ipchecker.join()
+            # self.ipchecker.join()
             self.updater.stop()
             print("Server stopped.")
