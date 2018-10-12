@@ -4,6 +4,7 @@ import logging
 import ipchecker
 import database
 import os
+from apiclient import APIClient
 
 class BotServer():
     """docstring for BotServer"""
@@ -75,9 +76,9 @@ class BotServer():
     #     msg = "Home address has been changed: " + self.ipchecker.lastIP
     #     bot.send_message(chat_id=BotServer.ADMIN_ID, text=msg)
 
-    def get_languages(bot, update):
+    def get_languages(self, bot, update):
         # get
-        msg = 
+        msg = self.api.get('http://localhost:8000/languages/')
         bot.send_message(chat_id=update.message.chat_id, text=msg)
 
     def unknown(bot, update):
@@ -92,6 +93,7 @@ class BotServer():
         # self.ipchecker.start()
         # self.db = database.Database()
         # self.db.connect()
+        self.api = APIClient()
 
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
@@ -100,6 +102,7 @@ class BotServer():
         caps_handler = CommandHandler('caps', BotServer.caps, pass_args=True)
         inline_caps_handler = InlineQueryHandler(BotServer.inline_caps)
         # checkip_handler = CommandHandler('checkip', self.check_ip)
+        get_languages_handler = CommandHandler('get_languages', self.get_languages)
         unknown_handler = MessageHandler(Filters.command, BotServer.unknown)
 
         self.dispatcher.add_handler(start_handler)
@@ -107,6 +110,7 @@ class BotServer():
         self.dispatcher.add_handler(caps_handler)
         self.dispatcher.add_handler(inline_caps_handler)
         # self.dispatcher.add_handler(checkip_handler)
+        self.dispatcher.add_handler(get_languages_handler)
         self.dispatcher.add_handler(unknown_handler)
 
         print("Server started.")
